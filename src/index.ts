@@ -3,7 +3,6 @@ import { Application, Loader, LoaderResource, PlaneGeometry, Rectangle, Sprite, 
   import * as Matter from "matter-js"; 
   import './style.css';
   import { update } from 'lodash';
-import { GameObject } from './gameObject';
 
   let keys: any = {};
   var Engine = Matter.Engine,
@@ -30,9 +29,7 @@ import { GameObject } from './gameObject';
   
     //Introduces simple cube sprite from file. 
 
-    let texture = new loader.resources[]
-
-
+    
     
     //adds sprite to the application
   
@@ -52,7 +49,7 @@ import { GameObject } from './gameObject';
     function gameloop() {
       //Right arrow
       if (keys["40"]) {
-      }
+      }}
       
     
     app.ticker.add(gameloop)
