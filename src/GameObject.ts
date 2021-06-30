@@ -19,18 +19,13 @@ export default abstract class GameObject { //new class that defines a game objec
         this.uuid = uuid.v4() //creates a unique identifier for the sprite.
     }
 
+    gameloop(delta: number): void {}
+
     update(delta: number){
         this.pixiData.position.x = this.matterData.position.x; //mpaing pixi positioniny and rotation to matter. 
         this.pixiData.position.y = this.matterData.position.y;
         this.pixiData.rotation = this.matterData.angle
 
-    }
-
-    /**
-     * updatePixiPosition, maps the pixi posistion data to to matter
-     * 
-     */
-    public updatePixiPosition() {
     }
 
 }

@@ -1,16 +1,18 @@
 import { Bodies } from "matter-js";
 import { Sprite } from "pixi.js";
 import GameObject from "./GameObject";
+import * as Matter from 'matter-js'
 
 export class Player extends GameObject {
     constructor(x: number, y: number) {
         const sprite = Sprite.from('./assets/square.png')
-        super(sprite, Bodies.rectangle(x, y, 100, 20,))
+        super(sprite, Bodies.rectangle(x, y, 128, 128,))
     }
 
-    update(delta:number){
-        super.update(delta)
+    gameloop(){ }
 
-        //Do player specific things
+    moveLeft(){
+        Matter.Body.applyForce(this.matterData, this.matterData.position, {x: 0, y: -1})
     }
+
 }
