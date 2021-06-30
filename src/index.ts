@@ -3,6 +3,8 @@ import * as PIXI from "pixi.js";
 import * as Matter from "matter-js";
 import './style.css';
 import { update } from 'lodash';
+import { Player } from './Player';
+import { DelegatedPlugin } from 'webpack';
 
 let keys: any = {};
 var Engine = Matter.Engine,
@@ -26,7 +28,11 @@ document.body.appendChild(app.view);
 
 //Introduces simple cube sprite from file. 
 
+let player = new Player(app.view.width/2, app.view.height/2); 
 
+app.stage.addChild(player.pixiData)
+
+World.add(Engine, [player.matterData])
 
 //adds sprite to the application
 
@@ -44,7 +50,7 @@ function keysUp(e: KeyboardEvent) {
   keys[e.code] = false;
 }
 
-function gameloop() {
+function gameloop(delta: number) {
   // Handle Directional Keys
   if (keys["ArrowUp"]) {
   }
@@ -54,6 +60,10 @@ function gameloop() {
   }
   if (keys["ArrowRight"]) {
   }
+
+  player.update(delta)
+
+  Engine.update(engine, delta)
 }
 
 

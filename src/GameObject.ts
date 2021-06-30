@@ -12,25 +12,25 @@ export default abstract class GameObject { //new class that defines a game objec
         this.pixiData = pixiData;
         this.matterData = matterData;
 
-        if (!this.matterData || !this.pixiData == false) { //checks that the data is actually there,
+        if (!this.matterData || !this.pixiData) { //checks that the data is actually there,
             throw new Error('Invalid construction of game object')
         }
 
         this.uuid = uuid.v4() //creates a unique identifier for the sprite.
     }
 
-    abstract gameloop(delta: number): void
+    update(delta: number){
+        this.pixiData.position.x = this.matterData.position.x; //mpaing pixi positioniny and rotation to matter. 
+        this.pixiData.position.y = this.matterData.position.y;
+        this.pixiData.rotation = this.matterData.angle
+
+    }
 
     /**
      * updatePixiPosition, maps the pixi posistion data to to matter
      * 
      */
     public updatePixiPosition() {
-
-        this.pixiData.position.x = this.matterData.position.x; //mpaing pixi positioniny and rotation to matter. 
-        this.pixiData.position.y = this.matterData.position.y;
-        this.pixiData.rotation = this.matterData.angle
-
     }
 
 }

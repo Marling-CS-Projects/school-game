@@ -8,5 +8,9 @@ export class Player extends GameObject {
         super(sprite, Bodies.rectangle(x, y, 100, 20,))
     }
 
-    gameloop() { }
+    update(delta:number){
+        super.update(delta)
+
+        //Do player specific things
+    }
 }
