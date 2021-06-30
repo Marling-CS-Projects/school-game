@@ -2,7 +2,7 @@ import { Sprite } from 'pixi.js'; //importing libraries
 import { Body } from 'matter-js';
 import * as uuid from 'uuid';
 
-export abstract class GameObject { //new class that defines a game object.
+export default abstract class GameObject { //new class that defines a game object.
 
     pixiData: Sprite;  //type declarations for class properties Pixi = sprites only, 
     matterData: Body; // matter only accepts bodies
