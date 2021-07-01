@@ -12,7 +12,7 @@ export class Player extends GameObject {
     gameloop(){ }
 
     moveLeft(){
-        Matter.Body.applyForce(this.matterData, this.matterData.position, {x: 0, y: -1})
+        Matter.Body.applyForce(this.matterData, this.matterData.position, { x: -0.002, y: 0 });
     }
 
 }

@@ -4,6 +4,7 @@ import * as Matter from "matter-js";
 import './style.css';
 import { update } from 'lodash';
 import { Player } from './Player';
+import { Background } from './Background';
 
 let keys: any = {};
 let Engine = Matter.Engine,
@@ -14,8 +15,6 @@ let Engine = Matter.Engine,
 let engine = Engine.create(
   
 )
-
-const loader = PIXI.Loader
 
 
 //Creating the application/stage in PIXI
@@ -33,12 +32,16 @@ document.body.appendChild(app.view);
 //Introduces simple cube sprite from file. 
 
 let player = new Player(app.view.width/2, app.view.height/2); 
+//let background = new Background(app.view.width/2, app.view.height/2)
+
+//app.stage.addChild(background.pixiData)
 app.stage.addChild(player.pixiData)
+
+
+//World.add(engine.world, [background.matterData])
 World.add(engine.world, [player.matterData, ])
 
-var floor = Bodies.rectangle(400, 580, 800, 40, {
-  isStatic: true
-});
+var floor = Bodies.rectangle(400, 580, app.view.width, app.view.height/4, { isStatic: true });
 
 World.add(engine.world, floor);
 
@@ -62,14 +65,18 @@ function keysUp(e: KeyboardEvent) {
 function gameloop(delta: number) {
   // Handle Directional Keys
   if (keys["ArrowUp"]) {
-
+    let pushVec = Matter.Vector.create(0, -0.1)
+    let posVec = Matter.Vector.create(player.matterData.position.x, player.matterData.position.y)
+    Body.applyForce(player.matterData, posVec, pushVec)
   }
   if (keys["ArrowDown"]) {
+    Body.setVelocity(player.matterData, {x: 0, y:-5})
   }
   if (keys["ArrowLeft"]) {
-    player.moveLeft
+    Body.setVelocity(player.matterData, {x: -5, y:0})
   }
   if (keys["ArrowRight"]) {
+    Body.setVelocity(player.matterData, {x:5, y:0})
   }
 
   player.update(delta)

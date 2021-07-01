@@ -19,7 +19,7 @@ export default abstract class GameObject { //new class that defines a game objec
         this.uuid = uuid.v4() //creates a unique identifier for the sprite.
     }
 
-    gameloop(delta: number): void {}
+    gameloop(delta: number): void {} //initialises types for 
 
     update(delta: number){
         this.pixiData.position.x = this.matterData.position.x; //mpaing pixi positioniny and rotation to matter. 
