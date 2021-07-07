@@ -5,7 +5,7 @@ import './style.css';
 import { update } from 'lodash';
 import { Player } from './Player';
 import { Background } from './Background';
-import { Platform } from './Bottom';
+import { Platform, Wall } from './Bottom';
 
 let keys: any = {};
 let Engine = Matter.Engine,
@@ -32,19 +32,20 @@ document.body.appendChild(app.view);
 
 //Introduces simple cube sprite from file. 
 
+let texture = PIXI.Texture.from('./assets/square.png')
+
 let player = new Player(app.view.width/2, app.view.height/2); 
-let background = new Background(app.view.width, app.view.height/4)
-let platform = new Platform(400, 340)
+let bottomWall = new Wall(texture, Bodies.rectangle(400,340,720, 20, {isStatic:true}));
+
 
 
 //app.stage.addChild(background.pixiData)
 app.stage.addChild(player.pixiData)
-app.stage.addChild(platform.pixiData)
-
+app.stage.addChild(bottomWall.pixiData)
 
 //World.add(engine.world, [background.matterData])
 World.add(engine.world,[player.matterData])
-World.add(engine.world, [platform.matterData])
+World.add(engine.world, [bottomWall.matterData])
 
 
 
@@ -83,8 +84,6 @@ function gameloop(delta: number) {
   }
 
   player.update(delta)
-
-  platform.update(delta)
 
   Engine.update(engine, delta*10)
 }

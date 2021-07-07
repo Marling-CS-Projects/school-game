@@ -12,7 +12,6 @@ export default abstract class GameObject { //new class that defines a game objec
         this.pixiData = pixiData;
         this.matterData = matterData;
 
-        this.pixiData.anchor.set(0.5)
 
         if (!this.matterData || !this.pixiData) { //checks that the data is actually there,
             throw new Error('Invalid construction of game object')
