@@ -5,6 +5,7 @@ import './style.css';
 import { update } from 'lodash';
 import { Player } from './Player';
 import { Background } from './Background';
+import { Platform } from './Bottom';
 
 let keys: any = {};
 let Engine = Matter.Engine,
@@ -19,8 +20,8 @@ let engine = Engine.create(
 
 //Creating the application/stage in PIXI
 let app = new Application({ 
-  width: window.innerWidth-10, 
-  height: window.innerHeight-10 
+  width: 1920,
+  height: 1080,
 });
 
 app.renderer.view.style.position = 'absolute';
@@ -32,18 +33,20 @@ document.body.appendChild(app.view);
 //Introduces simple cube sprite from file. 
 
 let player = new Player(app.view.width/2, app.view.height/2); 
-//let background = new Background(app.view.width/2, app.view.height/2)
+let background = new Background(app.view.width, app.view.height/4)
+let platform = new Platform(400, 340)
+
 
 //app.stage.addChild(background.pixiData)
 app.stage.addChild(player.pixiData)
+app.stage.addChild(platform.pixiData)
 
 
 //World.add(engine.world, [background.matterData])
-World.add(engine.world, [player.matterData, ])
+World.add(engine.world,[player.matterData])
+World.add(engine.world, [platform.matterData])
 
-var floor = Bodies.rectangle(400, 580, app.view.width, app.view.height/4, { isStatic: true });
 
-World.add(engine.world, floor);
 
 
 //adds sprite to the application
@@ -80,6 +83,8 @@ function gameloop(delta: number) {
   }
 
   player.update(delta)
+
+  platform.update(delta)
 
   Engine.update(engine, delta*10)
 }
