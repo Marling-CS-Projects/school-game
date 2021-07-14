@@ -5,7 +5,9 @@ import './style.css';
 import { update } from 'lodash';
 import { Player } from './Player';
 import { Background } from './Background';
-import { Platform, Wall } from './Bottom';
+import {  Platform,  } from './Bottom';
+import { Clouds } from './Clouds';
+
 
 let keys: any = {};
 let Engine = Matter.Engine,
@@ -32,21 +34,28 @@ document.body.appendChild(app.view);
 
 //Introduces simple cube sprite from file. 
 
-let texture = PIXI.Texture.from('./assets/square.png')
 
-let player = new Player(app.view.width/2, app.view.height/2); 
-let bottomWall = new Wall(texture, Bodies.rectangle(400,340,720, 20, {isStatic:true}));
 
+const backTexture = Texture.from('./assets/clouds.jpeg')
+let backgroundSprite = new PIXI.TilingSprite(backTexture, 1, backTexture.height)
+
+let player = new Player(300, app.view.height/2); 
+let bottomwall = new Platform(backgroundSprite, Bodies.rectangle(
+  backTexture.width, 
+  backTexture.height, 
+  backTexture.width, 
+  backTexture.height, 
+  {isStatic: true})
+  )
+let background = new Clouds(0, 0)
 
 
 //app.stage.addChild(background.pixiData)
-app.stage.addChild(player.pixiData)
-app.stage.addChild(bottomWall.pixiData)
+app.stage.addChild(background.pixiData, bottomwall.pixiData, player.pixiData, );
+
 
 //World.add(engine.world, [background.matterData])
-World.add(engine.world,[player.matterData])
-World.add(engine.world, [bottomWall.matterData])
-
+World.add(engine.world,[player.matterData, bottomwall.matterData])
 
 
 
@@ -74,13 +83,9 @@ function gameloop(delta: number) {
     Body.applyForce(player.matterData, posVec, pushVec)
   }
   if (keys["ArrowDown"]) {
-    Body.setVelocity(player.matterData, {x: 0, y:-5})
-  }
-  if (keys["ArrowLeft"]) {
-    Body.setVelocity(player.matterData, {x: -5, y:0})
-  }
-  if (keys["ArrowRight"]) {
-    Body.setVelocity(player.matterData, {x:5, y:0})
+    let pushVec = Matter.Vector.create(0, 0.1)
+    let posVec = Matter.Vector.create(player.matterData.position.x, player.matterData.position.y)
+    Body.applyForce(player.matterData, posVec, pushVec)
   }
 
   player.update(delta)
