@@ -1,20 +1,24 @@
+import { Bodies } from "matter-js";
+import { Sprite, Texture, TilingSprite } from "pixi.js";
+import GameObject from "./GameObject";
+import * as Matter from 'matter-js'
 
-import { Bodies } from 'matter-js'
-import * as PIXI from 'pixi.js'
-import GameObject from './GameObject'
+export class Floor extends GameObject { //inherits the properties from gameObject, (maps PIXI to Matter)
+    constructor(x: number, y: number) {
+        const texture = Texture.from('assets/floor.png')
+        let sprite = new TilingSprite(texture, 10000)
+        super(sprite, Bodies.rectangle(x, y, sprite.width, sprite.height, {isStatic:true}))
 
-/*var topWall = Bodies.rectangle(400, 50, 720, 20, { isStatic: true });
-var leftWall = Bodies.rectangle(50, 210, 20, 300, { isStatic: true });
-var rightWall = Bodies.rectangle(750, 210, 20, 300, { isStatic: true });*/
-
-export class Wall extends GameObject {
-    constructor(pixiData:any, matterData:any) {
-    super(pixiData, matterData)
+        if (this.matterData.angle != 90) { //attempt to prevent avatar from rotating. currently non-functional.
+            this.matterData.angle = 0;
+        }
     }
-}
 
-export class Platform extends GameObject {
-    constructor(pixiData:any, matterData:any) {
-    super(pixiData, matterData)
-    }
+    gameloop(){}
+
+    
+
+
+
+
 }

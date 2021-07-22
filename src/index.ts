@@ -5,7 +5,7 @@ import './style.css';
 import { update } from 'lodash';
 import { Player } from './Player';
 import { Background } from './Background';
-import {  Platform,  } from './Bottom';
+import {  Floor,  } from './Bottom';
 import { Clouds } from './Clouds';
 
 
@@ -34,29 +34,20 @@ document.body.appendChild(app.view);
 
 //Introduces simple cube sprite from file. 
 
-
-
-const backTexture = Texture.from('./assets/clouds.jpeg')
-let backgroundSprite = new PIXI.TilingSprite(backTexture, 1, backTexture.height)
+let texture = PIXI.Texture.from('./assets/square.png')
 
 let player = new Player(300, app.view.height/2); 
-let bottomwall = new Platform(backgroundSprite, Bodies.rectangle(
-  backTexture.width, 
-  backTexture.height, 
-  backTexture.width, 
-  backTexture.height, 
-  {isStatic: true})
-  )
+let bottomwall = new Floor(300, app.view.height/2 + 150)
 let background = new Clouds(0, 0)
 
 
 //app.stage.addChild(background.pixiData)
-app.stage.addChild(background.pixiData, bottomwall.pixiData, player.pixiData, );
+app.stage.addChild(background.pixiData, player.pixiData, bottomwall.pixiData);
 
 
 //World.add(engine.world, [background.matterData])
 World.add(engine.world,[player.matterData, bottomwall.matterData])
-
+console.log('Bottom Wall', bottomwall.matterData)
 
 
 //adds sprite to the application
@@ -89,6 +80,8 @@ function gameloop(delta: number) {
   }
 
   player.update(delta)
+  bottomwall.update(delta)
+  background.update(delta)
 
   Engine.update(engine, delta*10)
 }
