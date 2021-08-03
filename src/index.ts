@@ -1,13 +1,10 @@
-import { Application, Loader, LoaderResource, PlaneGeometry, Rectangle, Sprite, Texture } from 'pixi.js';
+import { Application, AppLoaderPlugin, Loader, LoaderResource, PlaneGeometry, Rectangle, Sprite, Texture } from 'pixi.js';
 import * as PIXI from "pixi.js";
 import * as Matter from "matter-js";
 import './style.css';
 import { update } from 'lodash';
 import { Player } from './Player';
-import { Background } from './Background';
-import {  Floor,  } from './Bottom';
-import { Clouds } from './Clouds';
-
+import {  Bottom,  } from './Bottom';
 
 let keys: any = {};
 let Engine = Matter.Engine,
@@ -37,20 +34,20 @@ document.body.appendChild(app.view);
 let texture = PIXI.Texture.from('./assets/square.png')
 
 let player = new Player(300, app.view.height/2); 
-let bottomwall = new Floor(300, app.view.height/2 + 150)
-let background = new Clouds(0, 0)
-
+let bottomwall = new Bottom(300, app.view.height/2 + 150);
+let platform = new Bottom(500, app.view.height/2 - 150)
 
 //app.stage.addChild(background.pixiData)
-app.stage.addChild(background.pixiData, player.pixiData, bottomwall.pixiData);
+app.stage.addChild(player.pixiData, bottomwall.pixiData, platform.pixiData);
 
 
 //World.add(engine.world, [background.matterData])
-World.add(engine.world,[player.matterData, bottomwall.matterData])
+World.add(engine.world,[player.matterData, bottomwall.matterData, platform.matterData])
 console.log('Bottom Wall', bottomwall.matterData)
 
 
 //adds sprite to the application
+
 
 // Keeping track of which keys are pressed
 window.addEventListener("keydown", keysDown)
@@ -66,6 +63,8 @@ function keysUp(e: KeyboardEvent) {
   keys[e.code] = false;
 }
 
+app.stage.position.x = -player.matterData.position.x + app.view.width / 2; //centres the camera on the avatar.
+
 function gameloop(delta: number) {
   // Handle Directional Keys
   if (keys["ArrowUp"]) {
@@ -79,9 +78,14 @@ function gameloop(delta: number) {
     Body.applyForce(player.matterData, posVec, pushVec)
   }
 
+  let pushVec = Matter.Vector.create(0.1, 0)
+  let posVec = Matter.Vector.create(bottomwall.matterData.position.x, bottomwall.matterData.position.y)
+  Body.applyForce(bottomwall.matterData, posVec, pushVec)
+
+
   player.update(delta)
   bottomwall.update(delta)
-  background.update(delta)
+  platform.update(delta)
 
   Engine.update(engine, delta*10)
 }

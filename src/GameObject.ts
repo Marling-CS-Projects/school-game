@@ -17,6 +17,8 @@ export default abstract class GameObject { //new class that defines a game objec
             throw new Error('Invalid construction of game object')
         }
 
+        this.pixiData.anchor.set(0.5);
+
         this.uuid = uuid.v4() //creates a unique identifier for the sprite.
     }
 
