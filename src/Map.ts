@@ -39,10 +39,10 @@ export class GameMap {
 
 export function generateGameMap() {
   const positions: PlatformPrefab[] = []; //generates an array of platform positions 
-  for(let i = 0; i < 250; i++) { //for testing - an array of 250 platforms, each moving on the x axis and y
+  for(let i = 0; i < 250; i++) { //for testing - an array of 250 platforms, each moving on the x axis
     positions.push({
       x: i * 1000,
-      y: Math.random() * (app.view.height/2),
+      y: app.view.height/2 + 150,
       width: 1,
     });
   }
