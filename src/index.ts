@@ -34,16 +34,16 @@ document.body.appendChild(app.view);
 let texture = PIXI.Texture.from('./assets/square.png')
 
 let player = new Player(300, app.view.height/2); 
-let bottomwall = new Bottom(300, app.view.height/2 + 150);
-let platform = new Bottom(500, app.view.height/2 - 150)
+let bottomWall = new Bottom(300, app.view.height/2 + 150);
+let platformOne = new Bottom(500, app.view.height/2 - 150)
 
 //app.stage.addChild(background.pixiData)
-app.stage.addChild(player.pixiData, bottomwall.pixiData, platform.pixiData);
+app.stage.addChild(player.pixiData, bottomWall.pixiData, platformOne.pixiData);
 
 
 //World.add(engine.world, [background.matterData])
-World.add(engine.world,[player.matterData, bottomwall.matterData, platform.matterData])
-console.log('Bottom Wall', bottomwall.matterData)
+World.add(engine.world,[player.matterData, bottomWall.matterData, platformOne.matterData])
+console.log('Bottom Wall', bottomWall.matterData)
 
 
 //adds sprite to the application
@@ -78,14 +78,10 @@ function gameloop(delta: number) {
     Body.applyForce(player.matterData, posVec, pushVec)
   }
 
-  let pushVec = Matter.Vector.create(0.1, 0)
-  let posVec = Matter.Vector.create(bottomwall.matterData.position.x, bottomwall.matterData.position.y)
-  Body.applyForce(bottomwall.matterData, posVec, pushVec)
-
 
   player.update(delta)
-  bottomwall.update(delta)
-  platform.update(delta)
+  bottomWall.update(delta)
+  platformOne.update(delta)
 
   Engine.update(engine, delta*10)
 }
