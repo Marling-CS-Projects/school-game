@@ -2,9 +2,10 @@ import { Application, AppLoaderPlugin, Loader, LoaderResource, PlaneGeometry, Re
 import * as PIXI from "pixi.js";
 import * as Matter from "matter-js";
 import './style.css';
-import { update } from 'lodash';
+import { matchesProperty, update } from 'lodash';
 import { Player } from './Player';
 import {  Bottom,  } from './Bottom';
+import { generateGameMap } from './Map';
 
 let keys: any = {};
 let Engine = Matter.Engine,
@@ -18,7 +19,7 @@ let engine = Engine.create(
 
 
 //Creating the application/stage in PIXI
-let app = new Application({ 
+export const app = new Application({ 
   width: 1920,
   height: 1080,
 });
@@ -29,21 +30,22 @@ app.renderer.view.style.display = "block";
 // Add the canvas to the document
 document.body.appendChild(app.view);
 
+let map = generateGameMap();
+map.platforms.forEach(platform => {
+  app.stage.addChild(platform.pixiData)
+  World.add(engine.world, platform.matterData)
+});
 //Introduces simple cube sprite from file. 
 
 let texture = PIXI.Texture.from('./assets/square.png')
 
 let player = new Player(300, app.view.height/2); 
-let bottomWall = new Bottom(300, app.view.height/2 + 150);
-let platformOne = new Bottom(500, app.view.height/2 - 150)
 
 //app.stage.addChild(background.pixiData)
-app.stage.addChild(player.pixiData, bottomWall.pixiData, platformOne.pixiData);
+app.stage.addChild(player.pixiData);
 
+World.add(engine.world,[player.matterData,])
 
-//World.add(engine.world, [background.matterData])
-World.add(engine.world,[player.matterData, bottomWall.matterData, platformOne.matterData])
-console.log('Bottom Wall', bottomWall.matterData)
 
 
 //adds sprite to the application
@@ -80,8 +82,11 @@ function gameloop(delta: number) {
 
 
   player.update(delta)
-  bottomWall.update(delta)
-  platformOne.update(delta)
+  map.updatePlatforms(delta);
+  map.platforms.forEach(platform=> {
+    platform.update(delta)
+  });
+
 
   Engine.update(engine, delta*10)
 }
