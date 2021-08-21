@@ -2,7 +2,7 @@ import { Application, AppLoaderPlugin, Loader, LoaderResource, PlaneGeometry, Re
 import * as PIXI from "pixi.js";
 import * as Matter from "matter-js";
 import './style.css';
-import { matchesProperty, update } from 'lodash';
+import { matchesProperty, partition, update } from 'lodash';
 import { Player } from './Player';
 import {  Bottom,  } from './Bottom';
 import { generateGameMap } from './Map';
@@ -42,6 +42,7 @@ let texture = PIXI.Texture.from('./assets/square.png')
 
 let player = new Player(300, app.view.height/2); 
 
+
 //app.stage.addChild(background.pixiData)
 app.stage.addChild(player.pixiData);
 
@@ -65,6 +66,23 @@ function keysUp(e: KeyboardEvent) {
   console.log(e.code)
   keys[e.code] = false;
 }
+
+
+Matter.Events.on(engine, "collisionStart", function (event){
+  event.pairs
+    .filter(pair => pair.bodyA == player.matterData || pair.bodyB == player.matterData)
+    .forEach(pair => {
+      let collidingWith = pair.bodyA == player.matterData ? pair.bodyB : pair.bodyA
+      
+      for (let i = 0; i < map.platforms.length; i++) {
+        if (collidingWith == map.platforms[i].matterData){
+          
+        }
+      }
+    })
+})
+
+
 
 app.stage.position.x = -player.matterData.position.x + app.view.width / 2; //centres the camera on the avatar.
 
