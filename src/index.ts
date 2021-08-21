@@ -76,7 +76,7 @@ Matter.Events.on(engine, "collisionStart", function (event){
       
       for (let i = 0; i < map.platforms.length; i++) {
         if (collidingWith == map.platforms[i].matterData){
-          
+          console.log('colliding innit')
         }
       }
     })
