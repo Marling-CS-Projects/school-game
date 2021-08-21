@@ -30,6 +30,7 @@ app.renderer.view.style.display = "block";
 // Add the canvas to the document
 document.body.appendChild(app.view);
 
+
 let map = generateGameMap();
 map.platforms.forEach(platform => {
   app.stage.addChild(platform.pixiData)
@@ -70,12 +71,12 @@ app.stage.position.x = -player.matterData.position.x + app.view.width / 2; //cen
 function gameloop(delta: number) {
   // Handle Directional Keys
   if (keys["ArrowUp"]) {
-    let pushVec = Matter.Vector.create(0, -0.1)
+    let pushVec = Matter.Vector.create(0, -0.01)
     let posVec = Matter.Vector.create(player.matterData.position.x, player.matterData.position.y)
     Body.applyForce(player.matterData, posVec, pushVec)
   }
   if (keys["ArrowDown"]) {
-    let pushVec = Matter.Vector.create(0, 0.1)
+    let pushVec = Matter.Vector.create(0, 0.02)
     let posVec = Matter.Vector.create(player.matterData.position.x, player.matterData.position.y)
     Body.applyForce(player.matterData, posVec, pushVec)
   }
@@ -90,6 +91,7 @@ function gameloop(delta: number) {
 
   Engine.update(engine, delta*10)
 }
+
 
 
 app.ticker.add(gameloop)

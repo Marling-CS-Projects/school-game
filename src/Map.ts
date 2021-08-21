@@ -42,7 +42,7 @@ export function generateGameMap() {
   for(let i = 0; i < 250; i++) { //for testing - an array of 250 platforms, each moving on the x axis
     positions.push({
       x: i * 1000,
-      y: app.view.height/2 + 150,
+      y: app.view.height/2 + 150, 
       width: 1,
     });
   }
