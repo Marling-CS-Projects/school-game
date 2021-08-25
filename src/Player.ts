@@ -6,7 +6,7 @@ import * as Matter from 'matter-js'
 export class Player extends GameObject { //inherits the properties from gameObject, (maps PIXI to Matter)
     constructor(x: number, y: number) {
         const sprite = Sprite.from('./assets/square.png')
-        super(sprite, Bodies.rectangle(x, y, 64, 64, {inertia: Infinity}), null)
+        super(sprite, Bodies.rectangle(x, y, 64, 64, {inertia: Infinity}))
 
         if (this.matterData.angle != 90) { //attempt to prevent avatar from rotating. currently non-functional.
             this.matterData.angle = 0;

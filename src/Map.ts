@@ -13,7 +13,7 @@ interface PlatformPrefab {
 
 export class GameMap {
 
-  platforms: GameObject[];
+  platforms: Bottom[];
   gameStartTime: number;
 
   constructor(positions: PlatformPrefab[]) {

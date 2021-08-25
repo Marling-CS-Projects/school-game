@@ -6,13 +6,12 @@ export default abstract class GameObject { //new class that defines a game objec
 
     pixiData: Sprite;  //type declarations for class properties Pixi = sprites only, 
     matterData: Body;
-    collisionData: Body // matter only accepts bodies
+   
     uuid: string; //the indentifier for the object can only be a string.
 
-    constructor(pixiData: Sprite, matterData: Body, collisionData: Body) {
+    constructor(pixiData: Sprite, matterData: Body) {
         this.pixiData = pixiData;
         this.matterData = matterData;
-        this.collisionData;
 
         if (!this.matterData || !this.pixiData) { //checks that the data is actually there,
             throw new Error('Invalid construction of game object')

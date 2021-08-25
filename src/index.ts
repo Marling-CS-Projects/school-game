@@ -33,7 +33,7 @@ document.body.appendChild(app.view);
 let map = generateGameMap();
 map.platforms.forEach(platform => {
   app.stage.addChild(platform.pixiData)
-  World.add(engine.world, platform.matterData)
+  World.add(engine.world, [platform.matterData, platform.collisionData])
 });
 //Introduces simple cube sprite from file. 
 
@@ -50,7 +50,7 @@ Matter.Events.on(engine, "collisionStart", function (event) { //when Matter dete
       let collidingWith = pair.bodyA == player.matterData ? pair.bodyB : pair.bodyA; //checks if the avatar is bodyA or B
       //for ground collisions
       for (let i = 0; i < map.platforms.length; i++) {
-        if (collidingWith == map.platforms[i].matterData) {
+        if (collidingWith == map.platforms[i].collisionData) {
           console.log('colliding innit'); 
         }
       }
