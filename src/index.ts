@@ -41,6 +41,15 @@ let player = new Player(300, app.view.height / 2);
 
 app.stage.addChild(player.pixiData);
 
+let gameEnd = () => {
+ map.platforms.forEach(platform => {
+   app.stage.removeChild(platform.pixiData)
+   World.remove(engine.world, platform.matterData)
+   World.remove(engine.world, platform.collisionData)   
+ });
+
+ map.platforms = []
+}
 World.add(engine.world, [player.matterData])
 
 Matter.Events.on(engine, "collisionStart", function (event) { //when Matter detects a collison start
@@ -51,7 +60,8 @@ Matter.Events.on(engine, "collisionStart", function (event) { //when Matter dete
       //for ground collisions
       for (let i = 0; i < map.platforms.length; i++) {
         if (collidingWith == map.platforms[i].collisionData) {
-          console.log('colliding innit'); 
+          console.log('Gameover');
+          gameEnd() 
         }
       }
     })

@@ -19,16 +19,15 @@ export class GameMap {
   constructor(positions: PlatformPrefab[]) {
     this.gameStartTime = Date.now(); // set the current time of when the map was created
 
-    // Turn these into platforms
+// Turn these into platforms
     this.platforms = positions.map(position => {
       return new Bottom(position.x, position.y); // app.view.height / 2 + 150
     });
   }
 
   updatePlatforms(delta: number) {
-    const elapsedMs = Date.now() - this.gameStartTime;
+    const elapsedMs = Date.now() - this.gameStartTime
     const elapsedSeconds = elapsedMs / 1000;
-
     const pixelsToMove = ((Math.pow(elapsedSeconds, 2) / gameSpeed) + 1) * delta; //increases the pixels to move on a logarithmic scale 
 
     this.platforms.forEach(platform => { //for each platform in the array, translate by the movement speed.
