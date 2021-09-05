@@ -3,13 +3,13 @@ import { Sprite, Texture, TilingSprite } from "pixi.js";
 import GameObject from "./GameObject";
 import * as Matter from 'matter-js'
 
-export class Bottom extends GameObject {//inherits the properties from gameObject, (maps PIXI to Matter)
+export class Platform extends GameObject {//inherits the properties from gameObject, (maps PIXI to Matter)
 
     collisionData: Matter.Body // matter only accepts bodies
 
     constructor(x: number, y: number) {
         const texture = Texture.from('assets/platform-block.png')
-        let spriteWidth = Math.floor(Math.random() * (1000 - 100) + 100)
+        let spriteWidth = Math.floor(Math.random() * (800 - 300) + 300)
         let sprite = new TilingSprite(texture, spriteWidth) //creates randomly sized platform sprites.
         super(sprite, Bodies.rectangle(x, y, sprite.width, sprite.height, {isStatic:true}))
         if (this.matterData.angle != 90){

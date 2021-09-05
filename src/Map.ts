@@ -1,9 +1,10 @@
 import GameObject from "./GameObject";
-import {Bottom} from "./Bottom";
+import {Platform} from "./Platform";
 import {app} from "./index";
 import {Body} from "matter-js";
 
-const gameSpeed = 25; // Bigger = the platforms end up moving faster slower. Increasing = flattening the curve
+const gameSpeed = 100; // Bigger = the platforms end up moving faster slower. Increasing = flattening the curve
+export let elapsedSeconds = 0
 
 interface PlatformPrefab {
   x: number;
@@ -13,7 +14,7 @@ interface PlatformPrefab {
 
 export class GameMap {
 
-  platforms: Bottom[];
+  platforms: Platform[];
   gameStartTime: number;
 
   constructor(positions: PlatformPrefab[]) {
@@ -21,13 +22,15 @@ export class GameMap {
 
 // Turn these into platforms
     this.platforms = positions.map(position => {
-      return new Bottom(position.x, position.y); // app.view.height / 2 + 150
+      return new Platform(position.x, position.y); // app.view.height / 2 + 150
     });
   }
 
+  
+
   updatePlatforms(delta: number) {
     const elapsedMs = Date.now() - this.gameStartTime
-    const elapsedSeconds = elapsedMs / 1000;
+    elapsedSeconds = elapsedMs / 1000;
     const pixelsToMove = ((Math.pow(elapsedSeconds, 2) / gameSpeed) + 1) * delta; //increases the pixels to move on a logarithmic scale 
 
     this.platforms.forEach(platform => { //for each platform in the array, translate by the movement speed.
