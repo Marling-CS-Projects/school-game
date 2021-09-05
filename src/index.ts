@@ -8,14 +8,14 @@ import {
   Sprite,
   Texture,
 } from "pixi.js";
-import * as PIXI from "pixi.js";
 import * as Matter from "matter-js";
 import "./style.css";
-
 import { Player } from "./Player";
 import { elapsedSeconds, generateGameMap } from "./Map";
-import { sortedIndex } from "lodash";
 import { Boundary } from "./Floor";
+import { createBaseGUI, createStartMenu } from "./gui";
+import { GameMap } from './Map';
+import { addScore } from "./score";
 
 let keys: any = {};
 let Engine = Matter.Engine,
@@ -31,38 +31,67 @@ export const app = new Application({
   height: 1080,
 });
 
-app.renderer.view.style.position = "absolute";
-app.renderer.view.style.display = "block";
+//app.renderer.view.style.position = "absolute";
+//app.renderer.view.style.display = "block";
 
 // Add the canvas to the document
-document.body.appendChild(app.view);
+const containingDiv = document.createElement("div");
+containingDiv.classList.add("container");
+containingDiv.appendChild(app.view);
 
-let map = generateGameMap();
-map.platforms.forEach((platform) => {
-  app.stage.addChild(platform.pixiData);
-  World.add(engine.world, [platform.matterData, platform.collisionData]);
-});
+document.body.appendChild(containingDiv);
+
+let map: GameMap = null;
+let player: Player = null;
+let playing = false;
+
+export let gameStart = () => {
+  map = generateGameMap();
+  map.platforms.forEach((platform) => {
+    app.stage.addChild(platform.pixiData);
+    World.add(engine.world, [platform.matterData, platform.collisionData]);
+  });
+
+  player = new Player(300, app.view.height / 2);
+
+  app.stage.addChild(player.pixiData);
+  World.add(engine.world, [player.matterData]);
+
+  app.stage.position.x = -player.matterData.position.x + app.view.width / 2; //centres the camera on the avatar.
+
+  playing = true;
+}
+
+
+
+createBaseGUI();
+
+createStartMenu()
+
 //Introduces simple cube sprite from file.
 
-let player = new Player(300, app.view.height / 2);
-
-app.stage.addChild(player.pixiData);
-
-let floor = new Boundary(app.view.height, app.view.width/2)
-World.add(engine.world, floor.matterData);
 
 let gameEnd = () => {
+  playing = false;
+
   map.platforms.forEach((platform) => {
     app.stage.removeChild(platform.pixiData);
     World.remove(engine.world, platform.matterData);
     World.remove(engine.world, platform.collisionData);
   });
 
-  map.platforms = [];
+  addScore(elapsedSeconds);
+
+  map = null;
+  player = null;
+
 };
-World.add(engine.world, [player.matterData]);
 
 Matter.Events.on(engine, "collisionStart", function (event) {
+
+  if (!playing) {
+    return    
+  }
   //when Matter detects a collison start
   event.pairs
     .filter(
@@ -82,15 +111,6 @@ Matter.Events.on(engine, "collisionStart", function (event) {
     });
 });
 
-const scoreText = new PIXI.Text('Score: ' + elapsedSeconds )
-scoreText.style = new PIXI.TextStyle({
-  fill: 0xfffff
-});
-
-let score = 0
-
-app.stage.addChild(scoreText)
-
 
 
 
@@ -108,10 +128,14 @@ function keysUp(e: KeyboardEvent) {
   keys[e.code] = false;
 }
 
-app.stage.position.x = -player.matterData.position.x + app.view.width / 2; //centres the camera on the avatar.
+
 
 function gameloop(delta: number) {
   // Handle Directional Keys
+  if (!playing) {
+    return;
+  }
+
   if (keys["ArrowUp"]) {
     let pushVec = Matter.Vector.create(0, -0.1);
     let posVec = Matter.Vector.create(
@@ -137,7 +161,6 @@ function gameloop(delta: number) {
 
   Engine.update(engine, delta * 10);
 
-  console.log(elapsedSeconds)
 }
 
 app.ticker.add(gameloop);
