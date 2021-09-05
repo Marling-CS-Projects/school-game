@@ -13,7 +13,7 @@ import "./style.css";
 import { Player } from "./Player";
 import { elapsedSeconds, generateGameMap } from "./Map";
 import { Boundary } from "./Floor";
-import { createBaseGUI, createStartMenu } from "./gui";
+import { createBaseGUI, createGameEnd, createStartMenu } from "./gui";
 import { GameMap } from './Map';
 import { addScore } from "./score";
 
@@ -80,10 +80,15 @@ let gameEnd = () => {
     World.remove(engine.world, platform.collisionData);
   });
 
+  app.stage.removeChild(player.pixiData);
+  World.remove(engine.world, player.matterData);
+
   addScore(elapsedSeconds);
 
   map = null;
   player = null;
+
+  createGameEnd();
 
 };
 
@@ -106,6 +111,7 @@ Matter.Events.on(engine, "collisionStart", function (event) {
         if (collidingWith == map.platforms[i].collisionData) {
           console.log("Gameover");
           gameEnd();
+          break
         }
       }
     });

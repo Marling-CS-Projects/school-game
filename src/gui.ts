@@ -72,4 +72,10 @@ export function createGameEnd(){
         </div>
     </div>
     `);
+
+    $(".start-button-container").on("click", function() {
+        createStartMenu();
+      });
+
+    
 }
