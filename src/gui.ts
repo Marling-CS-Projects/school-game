@@ -1,6 +1,7 @@
 
 import $ from "jquery";
 import { gameStart } from ".";
+import { elapsedSeconds } from "./Map";
 import { getTopScores } from "./score";
 
 const guiContainer = document.createElement('div')
@@ -59,4 +60,16 @@ export function closeMenu() {
 }
 
 
+export function createGameEnd(){
+    $(guiContainer).html(`
+    <div>
+        <div class="end-game-info">
+        <h1>Game Over! You scored ${elapsedSeconds}.</h1>
+        </div>
 
+        <div class="start-button-container">
+        Back to start
+        </div>
+    </div>
+    `);
+}
