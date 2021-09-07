@@ -11,11 +11,12 @@ import {
 import * as Matter from "matter-js";
 import "./style.css";
 import { Player } from "./Player";
-import { elapsedSeconds, generateGameMap } from "./Map";
-import { Boundary } from "./Floor";
+import { elapsedSeconds, generateGameMap,} from "./Map";
+import { Border,} from "./Floor";
 import { createBaseGUI, createGameEnd, createStartMenu } from "./gui";
 import { GameMap } from './Map';
 import { addScore } from "./score";
+import { wrap } from "lodash";
 
 let keys: any = {};
 let Engine = Matter.Engine,
@@ -44,6 +45,8 @@ document.body.appendChild(containingDiv);
 let map: GameMap = null;
 let player: Player = null;
 let playing = false;
+let floor: Border = null;
+let topMap: GameMap = null
 
 export let gameStart = () => {
   map = generateGameMap();
@@ -51,6 +54,9 @@ export let gameStart = () => {
     app.stage.addChild(platform.pixiData);
     World.add(engine.world, [platform.matterData, platform.collisionData]);
   });
+
+  floor = new Border(0, 1080)
+  World.add(engine.world, floor.matterData);
 
   player = new Player(300, app.view.height / 2);
 
@@ -114,6 +120,11 @@ Matter.Events.on(engine, "collisionStart", function (event) {
           break
         }
       }
+
+      if (collidingWith == floor.matterData){
+        console.log('Gameover')
+        gameEnd()
+      }
     });
 });
 
@@ -165,6 +176,9 @@ function gameloop(delta: number) {
     platform.update(delta);
   });
 
+  floor.update(delta)
+
+  
   Engine.update(engine, delta * 10);
 
 }

@@ -14,7 +14,7 @@ export function createStartMenu() {
       <div class="scoreboard">
         <ol>
           ${scoreData
-            .map(
+            .map( 
                 (scoreItem) =>
                     `<li>${scoreItem.score} (${new Date(
                         scoreItem.timestamp

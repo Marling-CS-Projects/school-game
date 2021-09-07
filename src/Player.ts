@@ -8,9 +8,6 @@ export class Player extends GameObject { //inherits the properties from gameObje
         const sprite = Sprite.from('./assets/square.png')
         super(sprite, Bodies.rectangle(x, y, 64, 64, {inertia: Infinity}))
 
-        if (this.matterData.angle != 90) { //attempt to prevent avatar from rotating. currently non-functional.
-            this.matterData.angle = 0;
-        }
     }
 
     gameloop(){}
@@ -19,4 +16,11 @@ export class Player extends GameObject { //inherits the properties from gameObje
         Matter.Body.applyForce(this.matterData, this.matterData.position, { x: -0.002, y: 0 });
     }
 
-}
+    update(delta:number){
+        super.update(delta)
+
+        if (this.matterData.position.y << 0) {
+            this.matterData.position.y == 0; 
+        };
+    }; 
+};
