@@ -7,7 +7,9 @@ import {
   Rectangle,
   Sprite,
   Texture,
+  Text,
 } from "pixi.js";
+import * as PIXI from "PIXI.js"
 import * as Matter from "matter-js";
 import "./style.css";
 import { Player } from "./Player";
@@ -16,7 +18,7 @@ import { Border,} from "./Floor";
 import { createBaseGUI, createGameEnd, createStartMenu } from "./gui";
 import { GameMap } from './Map';
 import { addScore } from "./score";
-import { wrap } from "lodash";
+import { ceil, wrap } from "lodash";
 
 let keys: any = {};
 let Engine = Matter.Engine,
@@ -47,6 +49,9 @@ let player: Player = null;
 let playing = false;
 let floor: Border = null;
 let topMap: GameMap = null
+let ceiling: Border
+
+let score = elapsedSeconds.toString();
 
 export let gameStart = () => {
   map = generateGameMap();
@@ -55,8 +60,14 @@ export let gameStart = () => {
     World.add(engine.world, [platform.matterData, platform.collisionData]);
   });
 
+  //adds a floor that can be collidied with and the game will end on collision
   floor = new Border(0, 1080)
   World.add(engine.world, floor.matterData);
+
+
+  //adds ceiling so player doenst float off. 
+  ceiling = new Border(0, 0)
+  World.add(engine.world, ceiling.matterData)
 
   player = new Player(300, app.view.height / 2);
 
@@ -177,7 +188,7 @@ function gameloop(delta: number) {
   });
 
   floor.update(delta)
-
+  ceiling.update(delta)
   
   Engine.update(engine, delta * 10);
 

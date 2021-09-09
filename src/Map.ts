@@ -44,7 +44,7 @@ export function generateGameMap() {
   for(let i = 0; i < 250; i++) { //for testing - an array of 250 platforms, each moving on the x axis
     positions.push({
       x: i * 1000,
-      y: Math.floor(Math.random() * (app.view.width/2 - 200) + 200),
+      y: Math.floor(Math.random() * (app.view.width/2 - 300) + 300),
       width: 1,
     });
   }
