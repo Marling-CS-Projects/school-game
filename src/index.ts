@@ -1,24 +1,14 @@
 import {
-  Application,
-  AppLoaderPlugin,
-  Loader,
-  LoaderResource,
-  PlaneGeometry,
-  Rectangle,
-  Sprite,
-  Texture,
-  Text,
+  Application
 } from "pixi.js";
-import * as PIXI from "PIXI.js"
 import * as Matter from "matter-js";
 import "./style.css";
 import { Player } from "./Player";
-import { elapsedSeconds, generateGameMap,} from "./Map";
-import { Border,} from "./Floor";
+import { elapsedSeconds } from "./Map";
 import { createBaseGUI, createGameEnd, createStartMenu } from "./gui";
 import { GameMap } from './Map';
 import { addScore } from "./score";
-import { ceil, wrap } from "lodash";
+import { Border } from "./Floor";
 
 let keys: any = {};
 let Engine = Matter.Engine,
@@ -29,7 +19,7 @@ let Engine = Matter.Engine,
 let engine = Engine.create();
 
 //Creating the application/stage in PIXI
-export const app = new Application({
+const app = new Application({
   width: 1920,
   height: 1080,
 });
@@ -47,34 +37,30 @@ document.body.appendChild(containingDiv);
 let map: GameMap = null;
 let player: Player = null;
 let playing = false;
-let floor: Border = null;
-let topMap: GameMap = null
 let ceiling: Border
-
-let score = elapsedSeconds.toString();
+let floor: Border
 
 export let gameStart = () => {
-  map = generateGameMap();
+  map = new GameMap(engine, app);
   map.platforms.forEach((platform) => {
     app.stage.addChild(platform.pixiData);
     World.add(engine.world, [platform.matterData, platform.collisionData]);
   });
 
-  //adds a floor that can be collidied with and the game will end on collision
-  floor = new Border(0, 1080)
+
+  floor = new Border(engine, app, 0, 1080)
   World.add(engine.world, floor.matterData);
 
 
   //adds ceiling so player doenst float off. 
-  ceiling = new Border(0, 0)
+  ceiling = new Border(engine,app, 0, 0)
   World.add(engine.world, ceiling.matterData)
 
-  player = new Player(300, app.view.height / 2);
+  player = new Player(engine, app, 300, app.view.height / 2);
 
   app.stage.addChild(player.pixiData);
   World.add(engine.world, [player.matterData]);
 
-  app.stage.position.x = -player.matterData.position.x + app.view.width / 2; //centres the camera on the avatar.
 
   playing = true;
 }
@@ -112,7 +98,7 @@ let gameEnd = () => {
 Matter.Events.on(engine, "collisionStart", function (event) {
 
   if (!playing) {
-    return    
+    return
   }
   //when Matter detects a collison start
   event.pairs
@@ -126,15 +112,10 @@ Matter.Events.on(engine, "collisionStart", function (event) {
       //for ground collisions
       for (let i = 0; i < map.platforms.length; i++) {
         if (collidingWith == map.platforms[i].collisionData) {
-          console.log("Gameover");
+          // console.log("Gameover");
           gameEnd();
           break
         }
-      }
-
-      if (collidingWith == floor.matterData){
-        console.log('Gameover')
-        gameEnd()
       }
     });
 });
@@ -147,12 +128,12 @@ window.addEventListener("keydown", keysDown);
 window.addEventListener("keyup", keysUp);
 
 function keysDown(e: KeyboardEvent) {
-  console.log(e.code);
+  // console.log(e.code);
   keys[e.code] = true;
 }
 
 function keysUp(e: KeyboardEvent) {
-  console.log(e.code);
+  // console.log(e.code);
   keys[e.code] = false;
 }
 
@@ -187,9 +168,6 @@ function gameloop(delta: number) {
     platform.update(delta);
   });
 
-  floor.update(delta)
-  ceiling.update(delta)
-  
   Engine.update(engine, delta * 10);
 
 }

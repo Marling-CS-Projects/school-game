@@ -1,7 +1,7 @@
 import GameObject from "./GameObject";
-import {Platform} from "./Platform";
-import {app} from "./index";
-import {Body} from "matter-js";
+import { Platform } from "./Platform";
+import Matter, { Body } from "matter-js";
+import { Application } from "pixi.js";
 
 const gameSpeed = 100; // Bigger = the platforms end up moving faster slower. Increasing = flattening the curve
 export let elapsedSeconds = 0
@@ -13,20 +13,22 @@ interface PlatformPrefab {
 }
 
 export class GameMap {
-
+  app: Application;
+  engine: Matter.Engine;
   platforms: Platform[];
   gameStartTime: number;
 
-  constructor(positions: PlatformPrefab[]) {
+  constructor(engine: Matter.Engine, app: Application) {
+    this.engine = engine;
+    this.app = app;
     this.gameStartTime = Date.now(); // set the current time of when the map was created
 
-// Turn these into platforms
-    this.platforms = positions.map(position => {
-      return new Platform(position.x, position.y); // app.view.height / 2 + 150
-    });
+    this.platforms = [];
+    // Turn these into platforms
+    for (let i = 0; i < 3; i++) { //for testing - an array of 250 platforms, each moving on the x axis
+      this.platforms.push(new Platform(engine, app, i * 1000, app.view.height / 2 + 150));
+    }
   }
-
-  
 
   updatePlatforms(delta: number) {
     const elapsedMs = Date.now() - this.gameStartTime
@@ -34,20 +36,30 @@ export class GameMap {
     const pixelsToMove = ((Math.pow(elapsedSeconds, 2) / gameSpeed) + 1) * delta; //increases the pixels to move on a logarithmic scale 
 
     this.platforms.forEach(platform => { //for each platform in the array, translate by the movement speed.
-      Body.translate(platform.matterData, {x: -pixelsToMove, y: 0});
+      Body.translate(platform.matterData, { x: -pixelsToMove, y: 0 });
     });
-  }
-}
 
-export function generateGameMap() {
-  const positions: PlatformPrefab[] = []; //generates an array of platform positions 
-  for(let i = 0; i < 250; i++) { //for testing - an array of 250 platforms, each moving on the x axis
-    positions.push({
-      x: i * 1000,
-      y: Math.floor(Math.random() * (app.view.width/2 - 300) + 300),
-      width: 1,
+    // get rid of any platforms that have passed zero
+    this.platforms = this.platforms.filter(p => {
+      if (p.matterData.position.x < 0) {
+        // remove it
+        this.app.stage.removeChild(p.pixiData);
+        Matter.World.remove(this.engine.world, p.matterData);
+        return false;
+      } else {
+        return true; // keep iutß
+      }
     });
-  }
 
-  return new GameMap(positions);
+    // Make new platforms as required
+    // Get the last platform
+    const lastPlatform = this.platforms[this.platforms.length - 1];
+
+    // If the last platform is in sight
+    if (!lastPlatform || lastPlatform.matterData.position.x < this.app.view.width) {
+      // Generate a new one
+      console.log('New platform?')
+      this.platforms.push(new Platform(this.engine, this.app, lastPlatform.matterData.position.x + 100, this.app.view.height / 2 + 150));
+    }
+  }
 }

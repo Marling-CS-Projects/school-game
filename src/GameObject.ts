@@ -1,15 +1,18 @@
-import { Sprite } from 'pixi.js'; //importing libraries
-import { Body } from 'matter-js';
+import { Application, Sprite } from 'pixi.js'; //importing libraries
+import Matter, { Body } from 'matter-js';
 import * as uuid from 'uuid';
 
 export default abstract class GameObject { //new class that defines a game object.
-
+    engine: Matter.Engine;
+    app: Application;
     pixiData: Sprite;  //type declarations for class properties Pixi = sprites only, 
     matterData: Body;
    
     uuid: string; //the indentifier for the object can only be a string.
 
-    constructor(pixiData: Sprite, matterData: Body) {
+    constructor(engine: Matter.Engine, app: Application, pixiData: Sprite, matterData: Body) {
+        this.engine = engine; 
+        this.app = app;
         this.pixiData = pixiData;
         this.matterData = matterData;
 

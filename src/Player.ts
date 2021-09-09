@@ -1,12 +1,12 @@
 import { Bodies } from "matter-js";
-import { Sprite } from "pixi.js";
+import { Sprite, Application } from "pixi.js";
 import GameObject from "./GameObject";
 import * as Matter from 'matter-js'
 
 export class Player extends GameObject { //inherits the properties from gameObject, (maps PIXI to Matter)
-    constructor(x: number, y: number) {
+    constructor(engine: Matter.Engine, app: Application, x: number, y: number) {
         const sprite = Sprite.from('./assets/square.png')
-        super(sprite, Bodies.rectangle(x, y, 64, 64, {inertia: Infinity}))
+        super(engine, app,sprite, Bodies.rectangle(x, y, 64, 64, {inertia: Infinity}))
 
     }
 
