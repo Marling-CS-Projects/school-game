@@ -56,7 +56,7 @@ export let gameStart = () => {
   ceiling = new Border(engine,app, 0, 0)
   World.add(engine.world, ceiling.matterData)
 
-  player = new Player(engine, app, 300, app.view.height / 2);
+  player = new Player(engine, app, app.view.width/2 , app.view.height / 2);
 
   app.stage.addChild(player.pixiData);
   World.add(engine.world, [player.matterData]);
@@ -115,7 +115,10 @@ Matter.Events.on(engine, "collisionStart", function (event) {
           // console.log("Gameover");
           gameEnd();
           break
-        }
+        }        
+      }
+      if (collidingWith == floor.matterData) {
+        gameEnd();           
       }
     });
 });

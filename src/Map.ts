@@ -1,7 +1,8 @@
 import GameObject from "./GameObject";
 import { Platform } from "./Platform";
-import Matter, { Body } from "matter-js";
+import Matter, { Body, World } from "matter-js";
 import { Application } from "pixi.js";
+import { Player } from "./Player";
 
 const gameSpeed = 100; // Bigger = the platforms end up moving faster slower. Increasing = flattening the curve
 export let elapsedSeconds = 0
@@ -25,7 +26,7 @@ export class GameMap {
 
     this.platforms = [];
     // Turn these into platforms
-    for (let i = 0; i < 3; i++) { //for testing - an array of 250 platforms, each moving on the x axis
+    for (let i = 0; i < 5; i++) { //for testing - an array of 250 platforms, each moving on the x axis
       this.platforms.push(new Platform(engine, app, i * 1000, app.view.height / 2 + 150));
     }
   }
@@ -39,15 +40,20 @@ export class GameMap {
       Body.translate(platform.matterData, { x: -pixelsToMove, y: 0 });
     });
 
+   
+
+    
     // get rid of any platforms that have passed zero
     this.platforms = this.platforms.filter(p => {
       if (p.matterData.position.x < 0) {
-        // remove it
-        this.app.stage.removeChild(p.pixiData);
-        Matter.World.remove(this.engine.world, p.matterData);
+        // remove i
+
+          this.app.stage.removeChild(p.pixiData);
+            Matter.World.remove(this.engine.world, p.matterData);
+
         return false;
       } else {
-        return true; // keep iutß
+        return true; // keep the platform
       }
     });
 
@@ -59,7 +65,11 @@ export class GameMap {
     if (!lastPlatform || lastPlatform.matterData.position.x < this.app.view.width) {
       // Generate a new one
       console.log('New platform?')
-      this.platforms.push(new Platform(this.engine, this.app, lastPlatform.matterData.position.x + 100, this.app.view.height / 2 + 150));
+      const platform = new Platform(this.engine, this.app, lastPlatform.matterData.position.x + 1000, this.app.view.height / 2 + 150)
+      this.platforms.push(platform);
+
+    this.app.stage.addChild(platform.pixiData);
+    World.add(this.engine.world, [platform.matterData, platform.collisionData]);
     }
   }
 }
