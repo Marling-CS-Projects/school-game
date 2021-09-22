@@ -5,7 +5,7 @@ import { Application } from "pixi.js";
 import { Player } from "./Player";
 
 const gameSpeed = 100; // Bigger = the platforms end up moving faster slower. Increasing = flattening the curve
-export let elapsedSeconds = 0
+export let elapsedSeconds = 0;
 
 interface PlatformPrefab {
   x: number;
@@ -26,30 +26,37 @@ export class GameMap {
 
     this.platforms = [];
     // Turn these into platforms
-    for (let i = 0; i < 5; i++) { //for testing - an array of 250 platforms, each moving on the x axis
-      this.platforms.push(new Platform(engine, app, i * 1000, app.view.height / 2 + 150));
+    for (let i = 0; i < 5; i++) {
+      //for testing - an array of 250 platforms, each moving on the x axis
+      this.platforms.push(
+        new Platform(
+          engine,
+          app,
+          i * 1000,
+          Math.floor(Math.random() * (540 - 300) + 300)
+        )
+      );
     }
   }
 
   updatePlatforms(delta: number) {
-    const elapsedMs = Date.now() - this.gameStartTime
+    const elapsedMs = Date.now() - this.gameStartTime;
     elapsedSeconds = elapsedMs / 1000;
-    const pixelsToMove = ((Math.pow(elapsedSeconds, 2) / gameSpeed) + 1) * delta; //increases the pixels to move on a logarithmic scale 
+    const pixelsToMove = (Math.pow(elapsedSeconds, 2) / gameSpeed + 1) * delta; //increases the pixels to move on a logarithmic scale
 
-    this.platforms.forEach(platform => { //for each platform in the array, translate by the movement speed.
+    this.platforms.forEach((platform) => {
+      //for each platform in the array, translate by the movement speed.
       Body.translate(platform.matterData, { x: -pixelsToMove, y: 0 });
     });
 
-   
-
-    
     // get rid of any platforms that have passed zero
-    this.platforms = this.platforms.filter(p => {
+    this.platforms = this.platforms.filter((p) => {
       if (p.matterData.position.x < 0) {
         // remove i
 
-          this.app.stage.removeChild(p.pixiData);
-            Matter.World.remove(this.engine.world, p.matterData);
+        this.app.stage.removeChild(p.pixiData);
+        Matter.World.remove(this.engine.world, p.matterData);
+        Matter.World.remove(this.engine.world, p.collisionData);
 
         return false;
       } else {
@@ -62,14 +69,25 @@ export class GameMap {
     const lastPlatform = this.platforms[this.platforms.length - 1];
 
     // If the last platform is in sight
-    if (!lastPlatform || lastPlatform.matterData.position.x < this.app.view.width) {
+    if (
+      !lastPlatform ||
+      lastPlatform.matterData.position.x < this.app.view.width
+    ) {
       // Generate a new one
-      console.log('New platform?')
-      const platform = new Platform(this.engine, this.app, lastPlatform.matterData.position.x + 1000, this.app.view.height / 2 + 150)
+      console.log("New platform?");
+      const platform = new Platform(
+        this.engine,
+        this.app,
+        lastPlatform.matterData.position.x + 1000,
+        Math.floor(Math.random() * (540 - 300) + 300)
+      );
       this.platforms.push(platform);
 
-    this.app.stage.addChild(platform.pixiData);
-    World.add(this.engine.world, [platform.matterData, platform.collisionData]);
+      this.app.stage.addChild(platform.pixiData);
+      World.add(this.engine.world, [
+        platform.matterData,
+        platform.collisionData,
+      ]);
     }
   }
 }

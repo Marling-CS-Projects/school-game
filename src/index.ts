@@ -1,12 +1,10 @@
-import {
-  Application
-} from "pixi.js";
+import { Application } from "pixi.js";
 import * as Matter from "matter-js";
 import "./style.css";
 import { Player } from "./Player";
 import { elapsedSeconds } from "./Map";
 import { createBaseGUI, createGameEnd, createStartMenu } from "./gui";
-import { GameMap } from './Map';
+import { GameMap } from "./Map";
 import { addScore } from "./score";
 import { Border } from "./Floor";
 
@@ -37,8 +35,8 @@ document.body.appendChild(containingDiv);
 let map: GameMap = null;
 let player: Player = null;
 let playing = false;
-let ceiling: Border
-let floor: Border
+let ceiling: Border;
+let floor: Border;
 
 export let gameStart = () => {
   map = new GameMap(engine, app);
@@ -47,32 +45,26 @@ export let gameStart = () => {
     World.add(engine.world, [platform.matterData, platform.collisionData]);
   });
 
-
-  floor = new Border(engine, app, 0, 1080)
+  floor = new Border(engine, app, 0, 1080);
   World.add(engine.world, floor.matterData);
 
+  //adds ceiling so player doenst float off.
+  ceiling = new Border(engine, app, 0, 0);
+  World.add(engine.world, ceiling.matterData);
 
-  //adds ceiling so player doenst float off. 
-  ceiling = new Border(engine,app, 0, 0)
-  World.add(engine.world, ceiling.matterData)
-
-  player = new Player(engine, app, app.view.width/2 , app.view.height / 2);
+  player = new Player(engine, app, app.view.width / 2, app.view.height / 2);
 
   app.stage.addChild(player.pixiData);
   World.add(engine.world, [player.matterData]);
 
-
   playing = true;
-}
-
-
+};
 
 createBaseGUI();
 
-createStartMenu()
+createStartMenu();
 
 //Introduces simple cube sprite from file.
-
 
 let gameEnd = () => {
   playing = false;
@@ -92,13 +84,11 @@ let gameEnd = () => {
   player = null;
 
   createGameEnd();
-
 };
 
 Matter.Events.on(engine, "collisionStart", function (event) {
-
   if (!playing) {
-    return
+    return;
   }
   //when Matter detects a collison start
   event.pairs
@@ -114,17 +104,14 @@ Matter.Events.on(engine, "collisionStart", function (event) {
         if (collidingWith == map.platforms[i].collisionData) {
           // console.log("Gameover");
           gameEnd();
-          break
-        }        
+          break;
+        }
       }
       if (collidingWith == floor.matterData) {
-        gameEnd();           
+        gameEnd();
       }
     });
 });
-
-
-
 
 // Keeping track of which keys are pressed
 window.addEventListener("keydown", keysDown);
@@ -139,8 +126,6 @@ function keysUp(e: KeyboardEvent) {
   // console.log(e.code);
   keys[e.code] = false;
 }
-
-
 
 function gameloop(delta: number) {
   // Handle Directional Keys
@@ -172,7 +157,6 @@ function gameloop(delta: number) {
   });
 
   Engine.update(engine, delta * 10);
-
 }
 
 app.ticker.add(gameloop);
