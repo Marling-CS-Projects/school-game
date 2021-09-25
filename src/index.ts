@@ -45,7 +45,7 @@ export let gameStart = () => {
     World.add(engine.world, [platform.matterData, platform.collisionData]);
   });
 
-  floor = new Border(engine, app, 0, 1080);
+  floor = new Border(engine, app, app.view.width/2, app.view.height);
   World.add(engine.world, floor.matterData);
 
   //adds ceiling so player doenst float off.

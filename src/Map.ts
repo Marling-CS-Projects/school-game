@@ -33,7 +33,7 @@ export class GameMap {
           engine,
           app,
           i * 1000,
-          Math.floor(Math.random() * (540 - 300) + 300)
+          Math.floor(Math.random() * (810 - 270) + 270)
         )
       );
     }
@@ -79,7 +79,7 @@ export class GameMap {
         this.engine,
         this.app,
         lastPlatform.matterData.position.x + 1000,
-        Math.floor(Math.random() * (540 - 300) + 300)
+        Math.floor(Math.random() * (810 - 270) + 270)
       );
       this.platforms.push(platform);
 
