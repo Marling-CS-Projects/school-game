@@ -1,5 +1,5 @@
 
-import $ from "jquery";
+import $ from "jquery";  
 import { gameStart } from ".";
 import { elapsedSeconds } from "./Map";
 import { getTopScores } from "./score";

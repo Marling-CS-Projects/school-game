@@ -1,4 +1,5 @@
 import { Application } from "pixi.js";
+import * as PIXI from "pixi.js";
 import * as Matter from "matter-js";
 import "./style.css";
 import { Player } from "./Player";
@@ -7,6 +8,7 @@ import { createBaseGUI, createGameEnd, createStartMenu } from "./gui";
 import { GameMap } from "./Map";
 import { addScore } from "./score";
 import { Border } from "./Floor";
+import { ProvidePlugin } from "webpack";
 
 let keys: any = {};
 let Engine = Matter.Engine,
@@ -21,7 +23,6 @@ const app = new Application({
   width: 1920,
   height: 1080,
 });
-
 //app.renderer.view.style.position = "absolute";
 //app.renderer.view.style.display = "block";
 
@@ -37,6 +38,18 @@ let player: Player = null;
 let playing = false;
 let ceiling: Border;
 let floor: Border;
+let score: any;
+let scoreText: any
+
+function setScore(){
+  score = elapsedSeconds
+};
+
+scoreText = new PIXI.Text("Score:" + score)
+scoreText.style = new PIXI.TextStyle({
+  fill: 0xffffff
+})
+
 
 export let gameStart = () => {
   map = new GameMap(engine, app);
@@ -45,7 +58,7 @@ export let gameStart = () => {
     World.add(engine.world, [platform.matterData, platform.collisionData]);
   });
 
-  floor = new Border(engine, app, app.view.width/2, app.view.height);
+  floor = new Border(engine, app, app.view.width / 2, app.view.height);
   World.add(engine.world, floor.matterData);
 
   //adds ceiling so player doenst float off.
@@ -56,6 +69,8 @@ export let gameStart = () => {
 
   app.stage.addChild(player.pixiData);
   World.add(engine.world, [player.matterData]);
+
+  app.stage.addChild(scoreText)
 
   playing = true;
 };
@@ -156,7 +171,19 @@ function gameloop(delta: number) {
     platform.update(delta);
   });
 
+
   Engine.update(engine, delta * 10);
+
+  setScore()
 }
 
 app.ticker.add(gameloop);
+
+// const r = Matter.Render.create({
+//   engine: engine,
+//   options: {
+//     wireframes: true,
+//   },
+// });
+// Matter.Render.run(r);
+// containingDiv.appendChild(r.canvas);
