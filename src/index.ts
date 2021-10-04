@@ -39,17 +39,26 @@ let playing = false;
 let ceiling: Border;
 let floor: Border;
 let score: any;
-let scoreText: any
+let scoreText: any;
 
-function setScore(){
-  score = elapsedSeconds
-};
-
-scoreText = new PIXI.Text("Score:" + score)
+/*function that returns the refreshed 
+  text to */
+function createScoreText() {
+  return `Score: ${score}`;
+}
+/* function called in the gameloop, refreshes score varaible 
+and resets the score text*/
+function setScore() {
+  score = elapsedSeconds;
+  scoreText.text = createScoreText();
+}
+/* creates the new text element and passes in the score, 
+ also styles the text so the font is white and can be seen
+ */
+scoreText = new PIXI.Text(createScoreText());
 scoreText.style = new PIXI.TextStyle({
-  fill: 0xffffff
-})
-
+  fill: 0xffffff,
+});
 
 export let gameStart = () => {
   map = new GameMap(engine, app);
@@ -70,7 +79,7 @@ export let gameStart = () => {
   app.stage.addChild(player.pixiData);
   World.add(engine.world, [player.matterData]);
 
-  app.stage.addChild(scoreText)
+  app.stage.addChild(scoreText);
 
   playing = true;
 };
@@ -171,10 +180,9 @@ function gameloop(delta: number) {
     platform.update(delta);
   });
 
-
   Engine.update(engine, delta * 10);
 
-  setScore()
+  setScore();
 }
 
 app.ticker.add(gameloop);
