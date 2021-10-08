@@ -82,8 +82,8 @@ export let gameStart = () => {
 
   player = new Player(engine, app, app.view.width / 2, app.view.height / 2);
 
-  app.stage.addChild(player.pixiData);
-  World.add(engine.world, [player.matterData]);
+  // app.stage.addChild(player.pixiData);
+  // World.add(engine.world, [player.matterData]);
 
   app.stage.addChild(scoreText)
 
@@ -170,7 +170,7 @@ function gameloop(delta: number) {
   }
 
   if (keys["ArrowUp"]) {
-    let pushVec = Matter.Vector.create(0, -0.1);
+    let pushVec = Matter.Vector.create(0, -0.05);
     let posVec = Matter.Vector.create(
       player.matterData.position.x,
       player.matterData.position.y
@@ -178,7 +178,7 @@ function gameloop(delta: number) {
     Body.applyForce(player.matterData, posVec, pushVec);
   }
   if (keys["ArrowDown"]) {
-    let pushVec = Matter.Vector.create(0, 0.1);
+    let pushVec = Matter.Vector.create(0, 0.05);
     let posVec = Matter.Vector.create(
       player.matterData.position.x,
       player.matterData.position.y
@@ -204,6 +204,8 @@ app.ticker.add(gameloop);
 //   engine: engine,
 //   options: {
 //     wireframes: true,
+//     width: 1920, 
+//     height: 1080,
 //   },
 // });
 // Matter.Render.run(r);

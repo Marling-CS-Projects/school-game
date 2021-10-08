@@ -1,5 +1,5 @@
 import GameObject from "./GameObject";
-import { Platform } from "./Platform";
+import { Platform, spriteWidth } from "./Platform";
 import Matter, { Body, World } from "matter-js";
 import { Application } from "pixi.js";
 import { Player } from "./Player";
@@ -47,6 +47,7 @@ export class GameMap {
     this.platforms.forEach((platform) => {
       //for each platform in the array, translate by the movement speed.
       Body.translate(platform.matterData, { x: -pixelsToMove, y: 0 });
+      Body.translate(platform.collisionData, { x: -pixelsToMove, y: 0 });
     });
 
     // get rid of any platforms that have passed zero

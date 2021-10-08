@@ -3,6 +3,8 @@ import { Application, Sprite, Texture, TilingSprite } from "pixi.js";
 import GameObject from "./GameObject";
 import * as Matter from "matter-js";
 
+export let spriteWidth: any
+
 export class Platform extends GameObject {
   //inherits the properties from gameObject, (maps PIXI to Matter)
 
@@ -10,7 +12,7 @@ export class Platform extends GameObject {
 
   constructor(engine: Matter.Engine, app: Application, x: number, y: number) {
     const texture = Texture.from("assets/platform-block.png");
-    let spriteWidth = Math.floor(Math.random() * (800 - 300) + 300);
+    spriteWidth = Math.floor(Math.random() * (800 - 300) + 300);
     let sprite = new TilingSprite(texture, spriteWidth); //creates randomly sized platform sprites.
     super(
       engine,
