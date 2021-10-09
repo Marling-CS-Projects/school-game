@@ -19,9 +19,5 @@ export class PowerUp extends GameObject {
 
   update(delta: number) {
     super.update(delta);
-
-    if (this.matterData.position.y << 0) {
-      this.matterData.position.y == 0;
-    }
   }
 }

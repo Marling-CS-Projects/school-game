@@ -40,34 +40,41 @@ let playing = false;
 let ceiling: Border;
 let floor: Border;
 let score: any;
-let scoreText: any
+let scoreText: any;
 let wall: BorderWall;
 
 /*function that returns the refreshed 
   text to */
-function createScoreText() { 
+function createScoreText() {
   return `Score: ${score}`;
 }
 /* function called in the gameloop, refreshes score varaible 
 and resets the score text*/
-function setScore(){
+function setScore() {
   score = elapsedSeconds;
   scoreText.text = createScoreText();
 }
- /* creates the new text element and passes in the score, 
+/* creates the new text element and passes in the score, 
  also styles the text so the font is white and can be seen
- */ 
+ */
 scoreText = new PIXI.Text(createScoreText());
 scoreText.style = new PIXI.TextStyle({
-  fill: 0xffffff
-})
-
+  fill: 0xffffff,
+});
 
 export let gameStart = () => {
   map = new GameMap(engine, app);
   map.platforms.forEach((platform) => {
     app.stage.addChild(platform.pixiData);
-    World.add(engine.world, [platform.matterData, platform.collisionData]);
+    World.add(engine.world, [
+      platform.matterData,
+      platform.collisionData,
+    ]);
+
+    if(platform.powerUp){
+     World.add(engine.world, [platform.powerUp.matterData])
+     app.stage.addChild(platform.powerUp.pixiData);
+    }
   });
 
   floor = new Border(engine, app, app.view.width / 2, app.view.height);
@@ -77,15 +84,15 @@ export let gameStart = () => {
   ceiling = new Border(engine, app, 0, 0);
   World.add(engine.world, ceiling.matterData);
 
-  wall = new BorderWall(engine, app, -10, app.view.height/2)
-  World.add(engine.world, wall.matterData)
+  wall = new BorderWall(engine, app, -10, app.view.height / 2);
+  World.add(engine.world, wall.matterData);
 
   player = new Player(engine, app, app.view.width / 2, app.view.height / 2);
 
-  // app.stage.addChild(player.pixiData);
-  // World.add(engine.world, [player.matterData]);
+  app.stage.addChild(player.pixiData);
+  World.add(engine.world, [player.matterData]);
 
-  app.stage.addChild(scoreText)
+  app.stage.addChild(scoreText);
 
   playing = true;
 };
@@ -103,6 +110,12 @@ let gameEnd = () => {
     app.stage.removeChild(platform.pixiData);
     World.remove(engine.world, platform.matterData);
     World.remove(engine.world, platform.collisionData);
+    
+    if(platform.powerUp){
+      World.remove(engine.world, platform.powerUp.matterData)
+      app.stage.removeChild(platform.powerUp.pixiData);
+     }
+
   });
 
   app.stage.removeChild(player.pixiData);
@@ -113,7 +126,7 @@ let gameEnd = () => {
   map = null;
   player = null;
 
-  app.stage.removeChild(scoreText); 
+  app.stage.removeChild(scoreText);
 
   createGameEnd();
 };
@@ -144,7 +157,7 @@ Matter.Events.on(engine, "collisionStart", function (event) {
       }
 
       if (collidingWith == wall.matterData) {
-        gameEnd()        
+        gameEnd();
       }
     });
 });
@@ -190,12 +203,14 @@ function gameloop(delta: number) {
   map.updatePlatforms(delta);
   map.platforms.forEach((platform) => {
     platform.update(delta);
+    if(platform.powerUp){
+      platform.powerUp.update(delta)
+    }
   });
-
 
   Engine.update(engine, delta * 10);
 
-  setScore()
+  setScore();
 }
 
 app.ticker.add(gameloop);

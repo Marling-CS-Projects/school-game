@@ -52,12 +52,16 @@ export class GameMap {
 
     // get rid of any platforms that have passed zero
     this.platforms = this.platforms.filter((p) => {
-      if (p.matterData.position.x < 0) {
+      if (p.matterData.position.x < -p.pixiData.width) {
         // remove i
 
         this.app.stage.removeChild(p.pixiData);
         Matter.World.remove(this.engine.world, p.matterData);
         Matter.World.remove(this.engine.world, p.collisionData);
+        if (p.powerUp) {
+          Matter.World.remove(this.engine.world, p.powerUp.matterData)
+          this.app.stage.removeChild(p.powerUp.pixiData)
+        }
 
         return false;
       } else {
