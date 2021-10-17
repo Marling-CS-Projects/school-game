@@ -1,6 +1,6 @@
 import { Bodies } from "matter-js";
 import { Sprite, Application } from "pixi.js";
-import GameObject from "./GameObject";
+import GameObject from "../GameObject";
 import * as Matter from "matter-js";
 
 export class PowerUp extends GameObject {

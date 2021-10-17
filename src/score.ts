@@ -43,3 +43,4 @@ interface Score {
     setTopScores(currentScores);
 
   };
+

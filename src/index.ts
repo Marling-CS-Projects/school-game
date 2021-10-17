@@ -10,6 +10,10 @@ import { addScore } from "./score";
 import { Border } from "./Floor";
 import { ProvidePlugin } from "webpack";
 import { BorderWall } from "./Wall";
+import { coins, getCoins, setCoins } from "./coins";
+import { create } from "lodash";
+import { Enemy } from "./powerups/enemy";
+import { Platform } from "./Platform";
 
 let keys: any = {};
 let Engine = Matter.Engine,
@@ -62,6 +66,9 @@ scoreText.style = new PIXI.TextStyle({
   fill: 0xffffff,
 });
 
+
+
+
 export let gameStart = () => {
   map = new GameMap(engine, app);
   map.platforms.forEach((platform) => {
@@ -74,6 +81,11 @@ export let gameStart = () => {
     if(platform.powerUp){
      World.add(engine.world, [platform.powerUp.matterData])
      app.stage.addChild(platform.powerUp.pixiData);
+    }
+
+    if (platform.enemy){
+      World.add(engine.world, [platform.enemy.matterData])
+      app.stage.addChild(platform.enemy.pixiData)
     }
   });
 
@@ -116,6 +128,11 @@ let gameEnd = () => {
       app.stage.removeChild(platform.powerUp.pixiData);
      }
 
+     if (platform.enemy){
+      World.remove(engine.world, platform.enemy.matterData);
+      app.stage.removeChild(platform.enemy.pixiData);
+    }
+
   });
 
   app.stage.removeChild(player.pixiData);
@@ -150,6 +167,9 @@ Matter.Events.on(engine, "collisionStart", function (event) {
           // console.log("Gameover");
           gameEnd();
           break;
+        }
+        if (map.platforms[i].enemy && collidingWith == map.platforms[i].enemy.matterData) {
+          gameEnd()
         }
       }
       if (collidingWith == floor.matterData) {
@@ -206,11 +226,19 @@ function gameloop(delta: number) {
     if(platform.powerUp){
       platform.powerUp.update(delta)
     }
+
+    if (platform.enemy) {
+      platform.enemy.update(delta)      
+    }
   });
 
   Engine.update(engine, delta * 10);
 
   setScore();
+
+  getCoins();
+
+  setCoins(delta);
 }
 
 app.ticker.add(gameloop);

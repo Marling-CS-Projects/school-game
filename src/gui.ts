@@ -1,24 +1,24 @@
-
-import $ from "jquery";  
+import $ from "jquery";
 import { gameStart } from ".";
+import { getCoins } from "./coins";
 import { elapsedSeconds } from "./Map";
 import { getTopScores } from "./score";
 
-const guiContainer = document.createElement('div')
+const guiContainer = document.createElement("div");
 guiContainer.classList.add("gui-container");
 
 export function createStartMenu() {
-    const scoreData = getTopScores()
+  const scoreData = getTopScores();
 
-    const scoreboardUiHtml = `
+  const scoreboardUiHtml = `
       <div class="scoreboard">
         <ol>
           ${scoreData
-            .map( 
-                (scoreItem) =>
-                    `<li>${scoreItem.score} (${new Date(
-                        scoreItem.timestamp
-                    ).toTimeString()})</li>`
+            .map(
+              (scoreItem) =>
+                `<li>${scoreItem.score} (${new Date(
+                  scoreItem.timestamp
+                ).toTimeString()})</li>`
             )
             .join("")}
         </ol>
@@ -27,9 +27,11 @@ export function createStartMenu() {
       
     `;
 
+  const coinData = getCoins();
+  const coinsUiHtml = `<div class = "coincounter">
+        <p>Coins: ${coinData}</p>`;
 
-
-    $(guiContainer).html(`
+  $(guiContainer).html(`
         <div>
             <div class="start-button-container">
                 Start Game
@@ -38,30 +40,30 @@ export function createStartMenu() {
             <br />
 
             ${scoreboardUiHtml}
+
+            ${coinsUiHtml}
         </div>
     `);
-    $(".start-button-container").on('click', function () {
-        // This will run when the start button is clicked
-        gameStart();
+  $(".start-button-container").on("click", function () {
+    // This will run when the start button is clicked
+    gameStart();
 
-        closeMenu();
+    closeMenu();
 
-        console.log('pressed');
-    });
+    console.log("pressed");
+  });
 }
 
-
 export function createBaseGUI() {
-    document.body.appendChild(guiContainer);
+  document.body.appendChild(guiContainer);
 }
 
 export function closeMenu() {
-    $(guiContainer).html('');
+  $(guiContainer).html("");
 }
 
-
-export function createGameEnd(){
-    $(guiContainer).html(`
+export function createGameEnd() {
+  $(guiContainer).html(`
     <div>
         <div class="end-game-info">
         <h1>Game Over! You scored ${elapsedSeconds}.</h1>
@@ -73,9 +75,7 @@ export function createGameEnd(){
     </div>
     `);
 
-    $(".start-button-container").on("click", function() {
-        createStartMenu();
-      });
-
-    
+  $(".start-button-container").on("click", function () {
+    createStartMenu();
+  });
 }
